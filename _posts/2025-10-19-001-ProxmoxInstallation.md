@@ -29,6 +29,16 @@ One of the best guides we found is **Jim’s Garage Homelab series** on YouTube.
 With Proxmox installed, our homelab is ready for virtual machines, containers, and more advanced experiments, forming the backbone of our hands-on learning environment.
 
 ---
+## Assigning a Static IP to the Proxmox Host
+
+We need to assign a static IP to the Proxmox host to ensure reliable access to the Proxmox web interface.
+
+Log in to your router and configure a DHCP reservation (binding) for the Proxmox host’s MAC address, assigning it a local static IP (in our case, 192.168.20.101).
+
+> Note: Use any **available** local IP from your network range to avoid conflicts. 
+{: .prompt-tip }
+
+---
 ## Up Next
 
 In the next chapter, we will be setting up Linux bridges for WAN and LAN (internal to Proxmox), allowing virtual machines and containers in Proxmox to communicate with each other and with devices on the home network.

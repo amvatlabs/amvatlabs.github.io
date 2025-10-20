@@ -20,21 +20,21 @@ In this chapter, we will create the network bridges in Proxmox that will be used
 ## Steps to Create Bridges
 1. Log in to the Proxmox web interface.
 2. Navigate to **Datacenter → Node → System → Network**.
-![](001.png)
+![001](001.png)
 3. Click **Create → Linux Bridge** to add a new bridge.
 4. For the WAN bridge:
    - Set the bridge name to `vmbr0`.
    - Set the IPv4 address to `192.168.20.101/24` and the gateway to `192.168.20.1`. The IP `192.168.20.101` is the static IP configured on the router for the Proxmox host and is used here as the IPv4 address for the WAN bridge.
    - Leave the remaining settings as default.
    - Click **Create**.
-![](002.png)
+![002](002.png)
 5. For the LAN bridge:
    - Click **Create → Linux Bridge** again.
    - Set the bridge name to `vmbr1.
    - Do not assign it to a physical interface; this will be used as an internal LAN.
    - Leave other settings as default.
    - Click **Create**.
-![](003.png)
+![003](003.png)
 6.  Once both bridges are created, verify that they appear in the network list.
 ![](004.png)
 7. Apply the configuration changes and reboot the node.

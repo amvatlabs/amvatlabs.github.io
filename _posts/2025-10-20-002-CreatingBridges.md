@@ -13,7 +13,7 @@ media_subpath: /assets/img/posts/002-CreatingBridges/
 ## Introduction
 In this chapter, we will create the network bridges in Proxmox that will be used for the internal and external networks. These bridges connect the virtual machines to the physical network interfaces and allow communication between the internal LAN and the WAN.
 
-> **Note:** From here on, **external network** refers to our home network (192.168.20.0/24), while **internal network** refers to the network within Proxmox. Do not confuse the external network with the internet. 
+> **Note:** From here on, **external network or WAN** refers to our home network (192.168.20.0/24), while **internal network** refers to the network within Proxmox. Do not confuse the external network with the internet. 
 {: .prompt-warning }
 
 ---

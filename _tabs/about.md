@@ -1,7 +1,7 @@
 ---
 # the default layout is 'page'
 icon: fas fa-info-circle
-order: 4
+order: 6
 ---
 
 Welcome to **amvatlabs** - a place where we explore, experiment, and sometimes break things… **so we don’t have to break them at work!**  

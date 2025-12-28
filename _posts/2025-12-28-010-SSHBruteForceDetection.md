@@ -15,7 +15,7 @@ In this chapter, we simulate an SSH password brute-force attack against a wazuh 
 
 ---
 ## Prerequisites
-- Wazuh agent installed on the victim machine (refer to Chapter 9).
+- Wazuh agent installed on the victim machine (refer to [Chapter 9]({% post_url 2025-11-05-009-DeployingWazuhAgent %})).
 - Wazuh server up and running.
 - An attack machine (preferably Kali Linux).
 

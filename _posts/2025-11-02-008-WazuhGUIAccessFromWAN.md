@@ -10,6 +10,9 @@ image: headers/01.jpg
 media_subpath: /assets/img/posts/008-WazuhGUIAccessFromWAN/
 ---
 
+> **Note:** The IP addresses referenced in this chapter reflect the original network configuration at the time of writing. The home (WAN) network has since been renumbered from `192.168.20.0/24` to `192.168.1.0/24`, and the OPNsense LAN from `192.168.1.0/24` to `192.168.3.0/24`. Refer to the [Network Diagram](/network-diagram/) for the current layout.
+{: .prompt-warning }
+
 ## Introduction
 Now that the Wazuh server is deployed, the first step is to verify that the Wazuh Dashboard can be accessed from the Debian internal admin VM. Once this internal access is confirmed, we will configure the network so the Wazuh Dashboard can also be reached directly from our local machine. This improves convenience, avoids multiple VM hops, and reduces the load on the Debian VM when Wazuh is performing heavier monitoring tasks.
 

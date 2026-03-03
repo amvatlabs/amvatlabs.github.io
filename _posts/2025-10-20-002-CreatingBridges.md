@@ -10,6 +10,9 @@ image: headers/01.jpg
 media_subpath: /assets/img/posts/002-CreatingBridges/
 ---
 
+> **Note:** The IP addresses referenced in this chapter reflect the original network configuration at the time of writing. The home (WAN) network has since been renumbered from `192.168.20.0/24` to `192.168.1.0/24`, and the OPNsense LAN from `192.168.1.0/24` to `192.168.3.0/24`. Refer to the [Network Diagram](/network-diagram/) for the current layout.
+{: .prompt-warning }
+
 ## Introduction
 In this chapter, we will create the network bridges in Proxmox that will be used for the internal and external networks. These bridges connect the virtual machines to the physical network interfaces and allow communication between the internal LAN and the WAN.
 

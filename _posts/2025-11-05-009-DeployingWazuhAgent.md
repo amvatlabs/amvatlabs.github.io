@@ -10,6 +10,9 @@ image: headers/01.jpg
 media_subpath: /assets/img/posts/009-DeployingWazuhAgent/
 ---
 
+> **Note:** The IP addresses referenced in this chapter reflect the original network configuration at the time of writing. The home (WAN) network has since been renumbered from `192.168.20.0/24` to `192.168.1.0/24`, and the OPNsense LAN from `192.168.1.0/24` to `192.168.3.0/24`. Refer to the [Network Diagram](/network-diagram/) for the current layout.
+{: .prompt-warning }
+
 ## Introduction
 With the Wazuh server successfully deployed and accessible, the next step is to connect endpoints to it for monitoring. In this chapter, we deploy a **Wazuh agent** on a Debian target VM so it can send security logs and events to the Wazuh server for analysis.
 

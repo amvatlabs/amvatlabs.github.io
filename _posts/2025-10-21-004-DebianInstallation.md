@@ -10,6 +10,9 @@ image: headers/01.jpg
 media_subpath: /assets/img/posts/004-DebianInstallation/
 ---
 
+> **Note:** The IP addresses referenced in this chapter reflect the original network configuration at the time of writing. The home (WAN) network has since been renumbered from `192.168.20.0/24` to `192.168.1.0/24`, and the OPNsense LAN from `192.168.1.0/24` to `192.168.3.0/24`. Refer to the [Network Diagram](/network-diagram/) for the current layout.
+{: .prompt-warning }
+
 ## Introduction
 In this chapter, we’ll set up a Debian virtual machine that acts as the heart of our internal network management. This VM will serve as the internal admin endpoint in Proxmox, providing a secure and dedicated space to access and manage OPNsense and other internal services through the LAN.
 

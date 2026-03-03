@@ -10,6 +10,9 @@ image: headers/01.jpg
 media_subpath: /assets/img/posts/012-IntrusionDetection/
 ---
 
+> **Note:** The IP addresses referenced in this chapter reflect the original network configuration at the time of writing. The home (WAN) network has since been renumbered from `192.168.20.0/24` to `192.168.1.0/24`, and the OPNsense LAN from `192.168.1.0/24` to `192.168.3.0/24`. Refer to the [Network Diagram](/network-diagram/) for the current layout.
+{: .prompt-warning }
+
 ## Introduction
 In this chapter, we focus on **network-level intrusion detection** by integrating Suricata with the OPNsense firewall. 
 Suricata is a powerful intrusion detection system (IDS) that can also operate as an intrusion prevention system (IPS) when deployed inline. It provides detailed alerts along with rich metadata, making it well suited for detecting suspicious network behaviour in a homelab environment.

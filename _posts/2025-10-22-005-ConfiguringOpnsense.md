@@ -10,6 +10,9 @@ image: headers/01.jpg
 media_subpath: /assets/img/posts/005-OpnsenseConfiguration/
 ---
 
+> **Note:** The IP addresses referenced in this chapter reflect the original network configuration at the time of writing. The home (WAN) network has since been renumbered from `192.168.20.0/24` to `192.168.1.0/24`, and the OPNsense LAN from `192.168.1.0/24` to `192.168.3.0/24`. Refer to the [Network Diagram](/network-diagram/) for the current layout.
+{: .prompt-warning }
+
 ## Introduction
 After successfully accessing the OPNsense web interface from the Debian internal admin VM in Chapter 4, we now move on to completing OPNsense’s initial configuration and creating VLANs to segment traffic for security tools and internal services.
 

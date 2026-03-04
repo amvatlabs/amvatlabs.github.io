@@ -108,7 +108,7 @@ This confirms that IDS detection depends strictly on defined rule conditions, in
 ## Custom Rule Implementation
 An Apache Web Server running on a Debian LXC container hosted in Proxmox was used to store and serve the custom rule files through a local HTTP service. This setup allows OPNsense to download the rule set directly from a reachable internal system.
 
-Refer [Chapter 13] ({% post_url 2026-03-03-013-DeployingVulnMachines %}) for detailed steps on deploying the LXC container.
+Refer [Chapter 13]({% post_url 2026-03-03-013-DeployingVulnMachines %}) for detailed steps on deploying the LXC container.
 
 The following command was used to install Apache on the Debian LXC container:
 ```bash

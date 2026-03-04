@@ -10,6 +10,9 @@ image: headers/01.jpg
 media_subpath: /assets/img/posts/007-WazuhDeployment/
 ---
 
+> **Note:** The IP addresses referenced in this chapter reflect the original network configuration at the time of writing. The home (WAN) network has since been renumbered from `192.168.20.0/24` to `192.168.1.0/24`, and the OPNsense LAN from `192.168.1.0/24` to `192.168.3.0/24`. Refer to the [Network Diagram](/network-diagram/) for the current layout.
+{: .prompt-warning }
+
 ## Introduction
 This series covers deploying the free and open-source Wazuh server inside Proxmox. The Wazuh server will monitor security events and collect logs from endpoints within the internal network.
 

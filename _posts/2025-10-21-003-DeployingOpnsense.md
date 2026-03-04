@@ -10,6 +10,9 @@ image: headers/01.jpg
 media_subpath: /assets/img/posts/003-DeployingOpnsense/
 ---
 
+> **Note:** The IP addresses referenced in this chapter reflect the original network configuration at the time of writing. The home (WAN) network has since been renumbered from `192.168.20.0/24` to `192.168.1.0/24`, and the OPNsense LAN from `192.168.1.0/24` to `192.168.3.0/24`. Refer to the [Network Diagram](/network-diagram/) for the current layout.
+{: .prompt-warning }
+
 ## Introduction
 In this chapter, we will guide you through deploying OPNsense as a virtual firewall in Proxmox. OPNsense will serve as the central point of control for our lab network, managing traffic between the WAN and LAN while providing essential security features like NAT and firewall rules. 
 

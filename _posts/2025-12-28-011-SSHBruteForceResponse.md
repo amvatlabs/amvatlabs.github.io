@@ -10,6 +10,9 @@ image: headers/01.jpg
 media_subpath: /assets/img/posts/011-SSHBruteForceResponse/
 ---
 
+> **Note:** The IP addresses referenced in this chapter reflect the original network configuration at the time of writing. The home (WAN) network has since been renumbered from `192.168.20.0/24` to `192.168.1.0/24`, and the OPNsense LAN from `192.168.1.0/24` to `192.168.3.0/24`. Refer to the [Network Diagram](/network-diagram/) for the current layout.
+{: .prompt-warning }
+
 ## Introduction
 In this chapter, we move from detection to response by actively mitigating the SSH brute-force attack observed earlier. Wazuh provides an **Active Response** capability that allows automated actions to be executed on monitored endpoints when specific security rules are triggered. This enables the system to react in real time instead of only generating alerts.
 

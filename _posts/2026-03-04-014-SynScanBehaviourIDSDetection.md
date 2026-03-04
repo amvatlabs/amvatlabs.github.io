@@ -11,14 +11,14 @@ media_subpath: /assets/img/posts/014-SyncScanIDSDetection/
 ---
 
 ## Introduction
-This chapter analyses basic TCP SYN scanning behavior before executing the official MITRE ATT&CK T1046 Atomic tests.
+This chapter analyses basic **TCP SYN scanning** behavior before executing the official MITRE ATT&CK T1046 Atomic tests.
 The objective is to understand how a SYN scan operates at the network level, how traffic flows within the lab architecture, and how an intrusion detection system inspects such activity.
 
 ---
 ## What Is Being Analysed
 Under the MITRE ATT&CK Discovery tactic, Network Service Discovery (T1046) involves identifying open ports and running services on a target system.
 
-Before executing Atomic Tests, manual testing was performed using Nmap to observe SYN scan behavior and validate detection capability within the lab environment.
+Before executing Atomic Tests, basic testing was performed using Nmap to observe SYN scan behavior and validate detection capability within the lab environment.
 
 The lab architecture is structured as follows:
 - Kali Linux VM – Default LAN (192.168.3.0/24)
@@ -31,51 +31,56 @@ Traffic between Kali and Debian is routed through OPNsense.
 ---
 ## Initial SYN Scan Testing
 The following command was executed from Kali where 192.168.4.5 is the target vm:
+
 `nmap -sS 192.168.4.5`
+
+This command performs a TCP SYN scan, commonly referred to as a half-open scan.
+
 ![](001.png)
 The scan identified:
 - Port 22 (SSH) - Open
-This command performs a TCP SYN scan, commonly referred to as a half-open scan.
 
 ---
 ## Understanding SYN Scan Behavior
 A SYN scan operates by initiating but not completing the TCP three-way handshake.
 The process is:
-- A SYN packet is sent to the target port
-- If the port is open, the target responds with SYN-ACK
-- The scanner (Kali VM) immediately sends RST
-- If the port is closed, the target responds with RST
+- A **SYN** packet is sent to the target port.
+- If the port is open, the target responds with **SYN-ACK**.
+- The scanner (in our case Kali VM) immediately sends **RST**.
+- If the port is closed, the target responds with **RST**.
 
 Since the handshake is not completed:
-- No authentication occurs
-- No application session is established
-- No data exchange takes place
+- No authentication occurs.
+- No application session is established.
+- No data exchange takes place.
 
-From a system perspective, no full connection is create
+From a system perspective, no full connection is created.
 
 ---
 ## Verifying Network Routing
 To confirm that traffic was passing through OPNsense, a traceroute was executed:
+
 `traceroute 192.168.4.5`
 ![](002.png)
-The result showed OPNsense as the intermediate hop, confirming that traffic between LAN and VLAN 4 was routed via the firewall.
-This ensures that Suricata, running on OPNsense, has visibility of the traffic.
+
+The result showed OPNsense as the intermediate hop, confirming that traffic between LAN and VLAN 4 was routed via the firewall. This ensures that Suricata, running on OPNsense, has visibility of the traffic.
 
 ---
 ## Suricata Configuration and Interface Adjustment
 Initially, Suricata was monitoring only the LAN interface.
 Since the Debian target was located in VLAN 4, the VLAN 4 interface (configured as _Targets_) was added to Suricata’s monitored interfaces.
 ![](003.png)
-Emerging Threats scan-related rules were then enabled and downloaded. Suricata was restarted to apply the changes.
+Emerging Threats **scan-related rules** were then enabled and downloaded. Suricata was restarted to apply the changes.
 ![](004.png)
 ![](005.png)
 Before performing the Nmap scan from the Kali VM, it was ensured that scan-related rules were enabled.
 ![](006.png)
 
 ---
-## Initial result
+## Initial Result
 Even though the Suricata rules were enabled and traffic was confirmed to be flowing through OPNsense, no alert was triggered for the following command:
-`nmap -sS <target-ip>
+
+`nmap -sS <target-ip>`
 ![](007.png)
 
 ---
@@ -85,25 +90,37 @@ On the VLAN 4 interface, the following TCP sequence was observed between Kali an
 - SYN
 - SYN-ACK
 - RST
+
 This confirmed that the SYN scan traffic was visible at the firewall level. However, no Suricata alert was generated.
 ![](008.png)
 Further inspection of the enabled Suricata rule revealed a condition requiring:
 - TCP window size = 2048
 ![](009.png)
+
 However, packet capture analysis showed that the Nmap SYN packets contained:
 - Window size = 1024
 ![](010.png)
+
 Since Suricata rules trigger only when all specified conditions match, the alert did not generate due to this mismatch.
 This confirms that IDS detection depends strictly on defined rule conditions, including TCP header values.
 
 ---
 ## Custom Rule Implementation
-To address the rule condition limitation identified earlier, a custom Suricata rule was created.
-A Debian LXC container hosted in Proxmox was used to store and serve the custom rule files through a local HTTP server. This allows OPNsense to download the rule set directly from a reachable internal system.
+An Apache Web Server running on a Debian LXC container hosted in Proxmox was used to store and serve the custom rule files through a local HTTP service. This setup allows OPNsense to download the rule set directly from a reachable internal system.
+
+Refer [Chapter 13] ({% post_url 2026-03-03-013-DeployingVulnMachines %}) for detailed steps on deploying the LXC container.
+
+The following command was used to install Apache on the Debian LXC container:
+```bash
+apt install apache2
+systemctl enable apache2
+systemctl start apache2
+systemctl status apache2
+```
 
 ---
-### Creating `custom.xml` (Rule Metadata File)
-A file named `custom.xml` was created. The IP address `192.168.3.3` refers to the Debian LXC container hosting the rule files.
+### Creating Custom File (Rule Metadata File)
+A file named `custom.xml` was created. The IP address `192.168.3.3` refers to the Apache Web Server hosting the rule files.
 
 The purpose of this XML file is to provide metadata to OPNsense. It tells OPNsense:
 - Where the custom rule files are located
@@ -123,7 +140,7 @@ In simple terms, the XML file acts as a pointer or reference so OPNsense knows f
 ![](011.png)
 
 ---
-### Creating `nmap.rules` (Detection Rule File)
+### Creating Nmap Rules (Detection Rule File)
 
 The file `nmap.rules` contains the actual Suricata detection logic. This file is written in Suricata rule syntax.
 This rule is designed to detect TCP SYN packets with a window size of 1024, which matches the packet characteristics observed during the Nmap SYN scan.
@@ -142,6 +159,9 @@ Explanation of the rule:
 - `sid:1000000` – Unique rule identifier
 - `rev:1` – Rule revision number
 
+**Note:** You can refer to [Suricata Rules](https://docs.suricata.io/en/latest/rules/header-keywords.html#tcp-keywords) when creating custom rules.
+{: .prompt-warning }
+
 ---
 ### Hosting the Custom Rules
 Custom rule files must be hosted on a system that OPNsense can reach over the network.
@@ -154,11 +174,6 @@ put custom.xml
 ```
 The file was placed in the appropriate Suricata metadata directory.
 ![](013.png)
-On the Debian LXC container, a simple HTTP server was started to host the rule files:
-```bash
-python3 -m http.server 8080
-```
-This allowed OPNsense to download the `nmap.rules` file through HTTP.
 
 ---
 ### Enabling and Applying the Custom Rule

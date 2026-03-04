@@ -61,6 +61,7 @@ From a system perspective, no full connection is created.
 To confirm that traffic was passing through OPNsense, a traceroute was executed:
 
 `traceroute 192.168.4.5`
+
 ![](002.png)
 
 The result showed OPNsense as the intermediate hop, confirming that traffic between LAN and VLAN 4 was routed via the firewall. This ensures that Suricata, running on OPNsense, has visibility of the traffic.

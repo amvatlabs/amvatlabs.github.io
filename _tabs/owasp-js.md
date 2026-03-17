@@ -177,6 +177,36 @@ As with the Score Board, the application's compiled JavaScript bundle exposes th
 
 ---
 
+### **Web3 Sandbox**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Broken Access Control` |
+| **Difficulty** | ⭐ (1 / 5) |
+
+#### Objective
+Find an accidentally deployed code sandbox for writing and executing smart contracts on the fly.
+
+#### Methodology
+
+1. Using the same `main.js` route enumeration technique applied in prior challenges, scanned the client-side bundle for internal paths.
+2. Identified a `web3-sandbox` route that was not linked or accessible from any part of the application UI.
+3. Navigated directly to `/#/web3-sandbox`, which loaded a live smart contract sandbox — completing the challenge.
+
+   ![](029.png)
+   
+   ![](030.png)
+
+#### Finding
+A development-grade Web3 smart contract sandbox was left deployed and reachable in the production application. The endpoint is unlinked from the UI but fully accessible to anyone who discovers the route via `main.js`. Exposing a code execution environment — even one scoped to smart contracts — in production represents a significant risk: it indicates that development or debug features were not removed prior to deployment, and the sandbox could potentially be leveraged to execute or test malicious contract logic against the application's environment.
+
+#### Remediation
+- Remove all development, debug, and sandbox features from production builds. These should exist only in isolated development or staging environments.
+- Apply server-side authentication and role-based access controls to any endpoint that provides code execution or elevated functionality, regardless of whether it is linked in the UI.
+- Introduce a pre-deployment checklist or CI gate to audit for the presence of known development-only routes before releases reach production.
+
+---
+
 ### **Login Admin**
 
 | Field | Detail |

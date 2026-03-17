@@ -140,15 +140,15 @@ Prose paragraph explaining the root cause and its security impact.
 
 ### Category Reference
 
-This list grows as more challenges are documented. Always use the category label exactly as Juice Shop names it. Update this table when a new category is encountered.
+This list grows as more challenges are documented. Always use the category label exactly as Juice Shop names it. **When a new category is encountered, update both this table and the `tags` field in the `_tabs/owasp-js.md` front matter.** Tags use lowercase hyphenated versions of the category name (e.g. `Broken Access Control` → `broken-access-control`).
 
-| Label | Typical challenge types |
-|---|---|
-| `Miscellaneous` | Route enumeration, chatbot, UI tricks |
-| `XSS` | DOM/reflected/stored XSS |
-| `Injection` | SQL injection variants |
-| `Broken Access Control` | IDOR, missing auth on endpoints |
-| `Security Misconfiguration` | Error handling, exposed configs |
-| `Sensitive Data Exposure` | Exposed files, leaked credentials |
-| `Observability Failures` | Exposed metrics/monitoring endpoints |
-| `Broken Authentication` | Weak passwords, credential leakage |
+| Label | Tag | Typical challenge types |
+|---|---|---|
+| `Miscellaneous` | `miscellaneous` | Route enumeration, chatbot, UI tricks |
+| `XSS` | `xss` | DOM/reflected/stored XSS |
+| `Injection` | `sql-injection` | SQL injection variants |
+| `Broken Access Control` | `broken-access-control` | IDOR, missing auth on endpoints |
+| `Security Misconfiguration` | `security-misconfiguration` | Error handling, exposed configs |
+| `Sensitive Data Exposure` | `sensitive-data-exposure` | Exposed files, leaked credentials |
+| `Observability Failures` | `observability-failures` | Exposed metrics/monitoring endpoints |
+| `Broken Authentication` | `broken-authentication` | Weak passwords, credential leakage |

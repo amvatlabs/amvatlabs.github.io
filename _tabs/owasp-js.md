@@ -534,6 +534,77 @@ The administration panel is protected only by a client-side route guard — ther
 
 ---
 
+### **Mass Dispel**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Miscellaneous` |
+| **Difficulty** | ⭐ (1 / 5) |
+
+#### Objective
+Close multiple "Challenge solved" notifications in a single action.
+
+#### Methodology
+
+1. After completing several challenges, multiple "Challenge solved" notifications appeared on screen. Clicking the close (`X`) button dismissed only one notification at a time — the challenge required closing all of them simultaneously.
+
+   > **Note:** If all notifications have already been closed, simply restart the Juice Shop server — this resets the session and re-triggers the "Challenge solved" notifications for previously completed challenges, giving you the opportunity to attempt this challenge.
+
+![](046.png)
+
+2. Opened browser developer tools and inspected `main.js` to analyse the notification close behaviour. Located the click handler bound to the notification close button:
+
+   ```javascript
+   t.bIt(
+     'click',
+     function (a) {
+       const s = i.eBV(e).$index,
+             m = t.XpG();
+       return i.Njj(m.closeNotification(s, a.shiftKey))
+     }
+   )
+   ```
+
+   Key observations:
+   - `s` is the **index** of the notification being closed.
+   - `a.shiftKey` passes whether the **Shift key was held** during the click.
+   - The function delegates to `closeNotification(index, shiftKey)`.
+
+3. Traced the `closeNotification` function to understand the conditional behaviour:
+
+   ```javascript
+   closeNotification(e, o = !1) {
+     o ? (
+       this.ngZone.runOutsideAngular(
+         () => {
+           this.io.socket().emit('verifyCloseNotificationsChallenge', this.notifications)
+         }
+       ),
+       this.notifications = []
+     ) : this.notifications.splice(e, 1),
+     this.ref.detectChanges()
+   }
+   ```
+
+   The logic branches on the `o` parameter (Shift key):
+   - **Shift held (`o = true`):** clears the entire `notifications` array (`this.notifications = []`) and emits a `verifyCloseNotificationsChallenge` WebSocket event to notify the backend.
+   - **Shift not held (`o = false`):** removes only the clicked notification (`this.notifications.splice(e, 1)`).
+
+4. With multiple notifications on screen, held **Shift** and clicked the close button on one notification. All notifications were dismissed simultaneously and the backend WebSocket event fired — completing the challenge.
+
+   ![](047.png)
+
+#### Finding
+The application embeds a hidden UI behaviour — a Shift+click modifier on the notification close button — entirely within the compiled client-side JavaScript. The feature is undocumented and invisible to users, but fully discoverable by anyone who inspects `main.js`. While this specific challenge is low risk in isolation, it demonstrates a broader pattern: application logic, including conditional branches and backend verification triggers, is exposed in plaintext in the client bundle and can be reverse-engineered to discover unintended or hidden functionality.
+
+#### Remediation
+- Avoid encoding hidden interaction patterns (keyboard modifiers, secret gestures) as the sole mechanism for triggering significant backend events. Such behaviours should be explicit and auditable.
+- Minimise the amount of sensitive application logic shipped in client-side bundles. Where possible, move decision-making server-side.
+- Apply JavaScript obfuscation and code splitting as a defence-in-depth measure to increase the effort required to reverse-engineer client logic (while recognising this is not a security boundary).
+
+---
+
+
 ### **Login Jim**
 
 | Field | Detail |

@@ -356,6 +356,61 @@ The `/rest/basket/{id}` endpoint is vulnerable to **Insecure Direct Object Refer
 
 ---
 
+### **Forged Feedback**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Broken Access Control` |
+| **Difficulty** | ⭐⭐⭐ (3 / 5) |
+
+#### Objective
+Post feedback in the name of another user.
+
+#### Methodology
+
+1. While authenticated as admin, submitted feedback through the application's feedback form and intercepted the outgoing request in Burp Suite.
+2. Inspected the request body and identified a client-supplied `UserId` field that identifies the feedback author:
+
+   ```json
+   {
+     "UserId": 1,
+     "captchaId": 17,
+     "captcha": "41",
+     "comment": "rating2 (***in@juice-sh.op)",
+     "rating": 2
+   }
+   ```
+
+   ![](034.png)
+
+3. Modified the `UserId` value from `1` to `2` in the intercepted request and forwarded it:
+
+   ```json
+   {
+     "UserId": 2,
+     "captchaId": 17,
+     "captcha": "41",
+     "comment": "rating2 (***in@juice-sh.op)",
+     "rating": 2
+   }
+   ```
+
+   ![](035.png)
+
+4. The server accepted the modified request and posted the feedback under the target user's account — confirming that the `UserId` is trusted from the client without any server-side ownership verification.
+
+   ![](036.png)
+
+#### Finding
+The feedback submission endpoint accepts a `UserId` parameter directly from the client and uses it to attribute the feedback without verifying that it matches the authenticated user's session. This is an IDOR vulnerability under the Broken Access Control category. Any authenticated user can post, and potentially defame or frame, any other user by simply modifying a single field in the request. The server places full trust in client-supplied identity data — a fundamental access control failure.
+
+#### Remediation
+- Never accept user identity from the client for write operations. The `UserId` should be derived exclusively from the authenticated session on the server side and never passed as a client-controlled parameter.
+- Apply server-side validation on all feedback submissions to assert that the submitting session matches the attributed user.
+- Audit all API endpoints that accept user-identifying fields (e.g. `UserId`, `authorId`) to ensure none are used without server-side session verification.
+
+---
+
 ### **Admin Section**
 
 | Field | Detail |

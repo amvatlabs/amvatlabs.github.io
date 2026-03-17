@@ -176,3 +176,42 @@ As with the Score Board, the application's compiled JavaScript bundle exposes th
 - Conduct periodic reviews of compiled bundles to identify unintended information leakage.
 
 ---
+
+### **Bully Chatbot**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Miscellaneous` |
+| **Difficulty** | ⭐ (1 / 5) |
+
+#### Objective
+Persistently interact with the Juice Shop support chatbot until it yields a coupon code.
+
+#### Methodology
+
+1. Opened the support chatbot and began sending repeated, varied messages — asking random questions and continuing to press the bot regardless of its responses.
+
+   ![](011.png)
+   ![](012.png)
+
+2. After sustained interaction, the chatbot capitulated and issued a 10% coupon code:
+
+   > *"Oooookay, if you promise to stop nagging me here's a 10% coupon code for you: `o*IVjhz3Tq`"*
+
+   ![](013.png)
+
+3. Captured the chatbot API requests in Burp Suite to observe the underlying request/response structure.
+
+   ![](014.png)
+
+   ![](015.png)
+
+#### Finding
+The chatbot has no rate limiting or abuse-detection mechanism. A user can send an unlimited number of messages in rapid succession, and the bot's response logic contains a hidden branch that triggers after a threshold of persistent inputs — leaking a valid coupon code. This is a business logic flaw: a secret reward is reachable through brute-force interaction with no technical barrier.
+
+#### Remediation
+- Implement rate limiting on the chatbot API endpoint to restrict the number of messages a session can send within a given time window.
+- Remove hidden logic branches that yield sensitive outputs (such as discount codes) in response to repeated inputs.
+- If promotional codes are intended to be distributed via the chatbot, do so through an explicit, controlled mechanism rather than a hidden persistence trigger.
+
+---

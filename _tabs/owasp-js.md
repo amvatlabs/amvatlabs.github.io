@@ -717,3 +717,66 @@ The chatbot has no rate limiting or abuse-detection mechanism. A user can send a
 - If promotional codes are intended to be distributed via the chatbot, do so through an explicit, controlled mechanism rather than a hidden persistence trigger.
 
 ---
+
+### **Password Strength**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Broken Authentication` |
+| **Difficulty** | ⭐⭐ (2 / 5) |
+
+#### Objective
+Log in with the administrator's credentials without changing them or using SQL injection.
+
+#### Methodology
+
+1. Navigated to the photo wall page (`/#/photo-wall`) — this page is **publicly accessible without authentication**. Intercepted the API responses in Burp Suite. The response for photos included user data embedded in each image record, revealing account details for users who had uploaded photos — including the admin:
+
+   ```json
+   "User": {
+     "id": 1,
+     "username": "",
+     "email": "admin@juice-sh.op",
+     "password": "0192023a7bbd73250516f069df18b500",
+     "role": "admin"
+   }
+   ```
+
+   ![](048.png)
+
+2. The password field contained a 32-character hex string — the characteristic format of an MD5 hash. Verified this using a hash identifier tool, which confirmed the algorithm as MD5.
+
+   ![](049.png)
+
+3. Submitted the hash to an online hash cracking service (CrackStation). The hash was found in the lookup table and resolved to the plaintext password:
+
+   ```
+   admin123
+   ```
+
+   ![](050.png)
+
+4. Logged in using the recovered credentials:
+
+   | Field | Value |
+   |-------|-------|
+   | Email | `admin@juice-sh.op` |
+   | Password | `admin123` |
+
+   The login succeeded, completing the challenge.
+
+   ![](051.png)
+   ![](052.png)
+
+> **Alternative approach:** The same result can be achieved via a brute-force attack using Burp Suite Intruder with a standard password wordlist (e.g. rockyou.txt). The absence of account lockout or rate limiting on the login endpoint means this is equally viable.
+
+#### Finding
+Two compounding weaknesses enabled this attack. First, the photo wall API response leaks the hashed password of any user who has uploaded a photo — including the administrator — exposing credential data to any authenticated user. Second, the administrator account uses a trivially weak password (`admin123`) hashed with MD5, a cryptographically broken algorithm with extensive precomputed lookup tables (rainbow tables) publicly available. Together, these flaws allow an attacker to recover the admin password without any brute force or SQL injection.
+
+#### Remediation
+- API responses must never include password hashes or other credential fields. Apply strict field-level serialisation controls to exclude sensitive columns from all API responses.
+- Enforce a strong password policy for all accounts, particularly administrator accounts. Weak, commonly used passwords such as `admin123` must be rejected at account creation and on password change.
+- Replace MD5 with a modern, slow hashing algorithm designed for passwords (e.g. bcrypt, Argon2, scrypt) that is resistant to rainbow table and brute-force attacks.
+- Implement account lockout or progressive rate limiting on the login endpoint to mitigate brute-force attacks.
+
+---

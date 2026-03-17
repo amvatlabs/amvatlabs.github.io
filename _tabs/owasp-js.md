@@ -279,6 +279,80 @@ The administration panel is protected only by a client-side route guard — ther
 
 ---
 
+### **Login Jim**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Injection` |
+| **Difficulty** | ⭐⭐⭐ (3 / 5) |
+
+#### Objective
+Log in with Jim's user account without knowing his password.
+
+#### Methodology
+
+1. Navigated to the administration panel (accessed via the Admin Section challenge) and retrieved the list of registered user emails. Jim's email — `jim@juice-sh.op` — was identified from the user list.
+
+   ![](022.png)
+
+2. Attempted to log in with Jim's email and a random password — the application returned an incorrect credentials error, as expected.
+
+3. To probe for SQL injection, entered a single quote (`'`) in both the email and password fields. Burp Suite captured the server's error response:
+
+   ```json
+   {
+     "error": {
+       "message": "SQLITE_ERROR: unrecognized token: \"3590cb8af0bbb9e78c343b52b93773c9\"",
+       "sql": "SELECT * FROM Users WHERE email = ''' AND password = '3590cb8af0bbb9e78c343b52b93773c9' AND deletedAt IS NULL"
+     }
+   }
+   ```
+
+   ![](023.png)
+
+   This error reveals several key details about the backend:
+   - The database is **SQLite**.
+   - User input is **concatenated directly** into the SQL query without parameterisation.
+   - The full query structure is: `SELECT * FROM Users WHERE email = '<input>' AND password = '<hash>' AND deletedAt IS NULL`
+   - Passwords are hashed with **MD5** before being compared.
+
+4. With the query structure confirmed, crafted a targeted payload using Jim's known email to comment out the password and `deletedAt` checks:
+
+   | Field | Value |
+   |-------|-------|
+   | Email | `jim@juice-sh.op' --` |
+   | Password | *(any value)* |
+
+   The query transforms from:
+
+   ```sql
+   SELECT * FROM Users WHERE email = 'jim@juice-sh.op' --' AND password = '<hash>' AND deletedAt IS NULL
+   ```
+
+   to effectively:
+
+   ```sql
+   SELECT * FROM Users WHERE email = 'jim@juice-sh.op'
+   ```
+
+   The `'` closes the email string cleanly, and `--` comments out the password hash check and the soft-delete filter entirely — leaving only the email condition, which matches Jim's account.
+
+5. Submitted the payload. The application authenticated as Jim, completing the challenge.
+
+   ![](024.png)
+   ![](025.png)
+
+#### Finding
+The login endpoint constructs its SQL query by concatenating user input directly, with no parameterisation. The SQLite error returned on a malformed input also leaks the full query structure, the hashing algorithm in use, and the database engine — providing an attacker with everything needed to craft a precise, targeted bypass. Any account whose email address is known (discoverable via the administration panel, as shown here) can be compromised without knowing the password.
+
+#### Remediation
+- Use parameterised queries (prepared statements) for all database interactions — user input must never be interpolated into SQL strings.
+- Suppress detailed database error messages in application responses. Return a generic error to the client and log the full detail server-side only.
+- Enforce server-side authorisation on the user list endpoint in the administration panel to prevent account enumeration.
+- Consider replacing MD5 with a modern password hashing algorithm (e.g. bcrypt, Argon2) — MD5 is cryptographically broken and unsuitable for password storage.
+
+---
+
 ### **Bully Chatbot**
 
 | Field | Detail |
@@ -291,7 +365,7 @@ Persistently interact with the Juice Shop support chatbot until it yields a coup
 
 #### Methodology
 
-1. Opened the support chatbot and began sending repeated, varied messages — asking random questions and continuing to press the bot regardless of its responses.
+1. Logged in as Jim, opened the support chatbot and began sending repeated, varied messages — asking random questions and continuing to press the bot regardless of its responses.
 
    ![](011.png)
    ![](012.png)

@@ -314,6 +314,48 @@ The application propagates unhandled filesystem errors directly to the client. T
 
 ---
 
+### **View Basket**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Broken Access Control` |
+| **Difficulty** | ⭐⭐ (2 / 5) |
+
+#### Objective
+View another user's shopping basket.
+
+#### Methodology
+
+1. While authenticated as admin, navigated to the shopping basket and intercepted the outgoing requests in Burp Suite.
+2. Observed that the basket is fetched via a REST endpoint using a numeric ID in the path:
+
+   ```
+   GET /rest/basket/1
+   ```
+
+3. Modified the basket ID in the intercepted request from `1` to `2` and forwarded it:
+
+   ```
+   GET /rest/basket/2
+   ```
+
+   ![](031.png)
+
+4. The server returned the shopping basket belonging to a different user — without any authorisation check.
+
+   ![](032.png)
+   ![](033.png)
+
+#### Finding
+The `/rest/basket/{id}` endpoint is vulnerable to **Insecure Direct Object Reference (IDOR)**. The server returns basket contents based solely on the numeric ID supplied in the URL, without verifying whether the authenticated user is the owner of that basket. Any authenticated user can enumerate basket IDs sequentially to access — and potentially manipulate — the shopping carts of all other users. This is a Broken Access Control vulnerability and is ranked as the top risk in the OWASP Top 10.
+
+#### Remediation
+- Enforce ownership checks server-side on every basket request: verify that the authenticated user's session corresponds to the requested basket ID before returning any data.
+- Avoid exposing raw sequential database IDs in API endpoints. Use non-guessable identifiers (e.g. UUIDs) to reduce the ease of enumeration, though this should be considered a defence-in-depth measure — not a substitute for proper authorisation.
+- Apply automated tests that assert cross-user data access is rejected with a `403 Forbidden` response.
+
+---
+
 ### **Admin Section**
 
 | Field | Detail |

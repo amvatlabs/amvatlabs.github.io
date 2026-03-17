@@ -35,7 +35,7 @@ This page documents each [OWASP Juice Shop](https://owasp.org/www-project-juice-
 
 ---
 
-### Score Board
+### **Score Board**
 
 | Field | Detail |
 |-------|--------|
@@ -67,7 +67,7 @@ The application's client-side JavaScript bundle (`main.js`) contains all interna
 
 ---
 
-### DOM XSS
+### **DOM XSS**
 
 | Field | Detail |
 |-------|--------|
@@ -120,5 +120,59 @@ The search functionality reflects user input directly into the DOM without suffi
 - Implement a strict Content Security Policy (CSP) that disallows `javascript:` URIs and inline event handlers.
 - Avoid using `innerHTML` or equivalent DOM sinks when inserting user-controlled data; prefer `textContent` instead.
 - Apply a blocklist for dangerous URI schemes (`javascript:`, `data:`) in addition to output encoding.
+
+---
+
+### **Privacy Policy**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Miscellaneous` |
+| **Difficulty** | ⭐ (1 / 5) |
+
+#### Objective
+Read the Juice Shop's privacy policy page.
+
+#### Methodology
+
+1. Using the same reconnaissance technique as the Score Board challenge, inspected `main.js` and searched for route definitions.
+2. Located a `privacy-security` parent route with several child paths, including `privacy-policy`:
+
+   ```javascript
+   {
+       path: "privacy-security",
+       component: os,
+       children: [{
+           path: "privacy-policy",
+           component: hs
+       }, {
+           path: "change-password",
+           component: pr
+       }, {
+           path: "two-factor-authentication",
+           component: rs
+       }, {
+           path: "data-export",
+           component: ps
+       }, {
+           path: "last-login-ip",
+           component: us
+       }]
+   }
+   ```
+
+   ![](009.png)
+
+3. Navigated to `/#/privacy-security/privacy-policy`, which loaded the privacy policy page and completed the challenge.
+
+   ![](010.png)
+
+#### Finding
+As with the Score Board, the application's compiled JavaScript bundle exposes the full client-side route tree in plaintext. This allows any user to enumerate internal pages — including account management paths such as password change, two-factor authentication, and data export — without any authentication or prior knowledge of the application's structure.
+
+#### Remediation
+- Remove or obfuscate route definitions from client-facing JavaScript bundles where possible.
+- Enforce server-side authentication and authorisation checks on all sensitive routes — client-side route guards alone are insufficient, as they can be trivially bypassed.
+- Conduct periodic reviews of compiled bundles to identify unintended information leakage.
 
 ---

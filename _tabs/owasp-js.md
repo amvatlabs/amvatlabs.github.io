@@ -248,6 +248,42 @@ The login endpoint constructs SQL queries by concatenating user-supplied input d
 
 ---
 
+### **Error Handling**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Security Misconfiguration` |
+| **Difficulty** | ⭐ (1 / 5) |
+
+#### Objective
+Provoke an error that is neither gracefully nor consistently handled by the application.
+
+#### Methodology
+
+1. While authenticated as admin, navigated to the order history page.
+
+   ![](026.png)
+
+2. Clicked **Print order confirmation** on an existing order, which generates a PDF at a path derived from the order ID.
+3. Modified the order ID in the request to an arbitrary value (e.g. `order_xxx`). Rather than returning a user-friendly error, the application responded with a raw server error message:
+
+   ```
+   no such file or directory - stat '/opt/juice-shop/ftp/order_xxx.pdf'
+   ```
+
+   ![](027.png)
+
+   ![](028.png)
+
+#### Finding
+The application propagates unhandled filesystem errors directly to the client. The error message discloses the **absolute server file path** (`/opt/juice-shop/ftp/`), confirming the directory structure used to store order PDFs. This constitutes an information disclosure vulnerability — internal path details can assist an attacker in crafting further targeted attacks such as path traversal or direct file access attempts against the FTP directory.
+
+#### Remediation
+- Implement a global error handler that intercepts unhandled exceptions and returns a generic, user-friendly message to the client (e.g. `"An unexpected error occurred."`).
+- Log the full error detail — including stack traces and file paths — server-side only, never in the HTTP response body.
+
+---
+
 ### **Admin Section**
 
 | Field | Detail |

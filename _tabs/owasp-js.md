@@ -780,3 +780,57 @@ Two compounding weaknesses enabled this attack. First, the photo wall API respon
 - Implement account lockout or progressive rate limiting on the login endpoint to mitigate brute-force attacks.
 
 ---
+
+### **Security Policy**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Miscellaneous` |
+| **Difficulty** | ⭐⭐ (2 / 5) |
+
+#### Objective
+Locate and read the application's security policy — behaving as a responsible white-hat researcher would before beginning any testing.
+
+#### Methodology
+
+1. With Burp Suite running, browsed the application normally. Almost every page navigation automatically triggered a `GET` request to:
+
+   ```
+   GET /rest/admin/application-configuration
+   ```
+
+   This request is issued by the application on nearly every page load — no navigation to any admin area or special action is required to trigger it.
+
+2. Examined the response body, which contained a detailed application configuration object including references to various internal URLs. Noted entries related to `securityTxt` and CSAF (Common Security Advisory Framework) metadata.
+
+   ![Application configuration response in Burp Suite showing securityTxt references](053.png)
+
+3. Navigated to the CSAF provider metadata URL found in the configuration:
+
+   ```
+   /.well-known/csaf/provider-metadata.json
+   ```
+
+   This returned a structured JSON metadata document describing the application's security advisory framework.
+
+   ![CSAF provider-metadata.json loaded](054.png)
+
+4. Explored the `.well-known/` directory structure further, following links referenced in the metadata. Located and navigated to `security.txt` — the standardised file used by organisations to communicate their security disclosure policy:
+
+   ![Navigating the .well-known directory](055.png)
+
+   ![security.txt file located](056.png)
+
+   ![security.txt contents](057.png)
+
+   ![Challenge solved on reading the security policy](058.png)
+
+#### Finding
+The application correctly implements a `security.txt` file under `/.well-known/` — a positive security practice that provides a standardised contact point for responsible disclosure. However, the `/rest/admin/application-configuration` endpoint is accessible without elevated authorisation and exposes a broad set of internal configuration details, including internal URL structures and framework references, to any user who intercepts application traffic. This over-exposure of configuration data reduces the effort required for reconnaissance.
+
+#### Remediation
+- Restrict the `/rest/admin/application-configuration` endpoint to authorised administrator sessions only. Configuration data should not be reachable by regular or unauthenticated users.
+- Continue maintaining `security.txt` under `/.well-known/security.txt` as a responsible disclosure best practice — this is working as intended.
+- Audit all `/rest/admin/` endpoints to confirm that each enforces appropriate server-side access controls.
+
+---

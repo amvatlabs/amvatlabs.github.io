@@ -314,6 +314,63 @@ The application propagates unhandled filesystem errors directly to the client. T
 
 ---
 
+### **Confidential Document**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Sensitive Data Exposure` |
+| **Difficulty** | ⭐ (1 / 5) |
+
+#### Objective
+Access a confidential document stored on the server.
+
+#### Methodology
+
+1. Logged in as Admin, navigated to the order history page and attempted to print the order confirmation for existing orders.
+
+   ![](037.png)
+
+2. The print request returned a `404` error for two of the existing orders, which leaked an internal server file path in the response (similar to Error Handling challenge):
+
+   ```
+   no such file or directory - stat '/opt/juice-shop/ftp/order_5267-4b8d07a7c5ba95a1.pdf'
+   ```
+
+   ![](038.png)
+
+3. Used the disclosed path to infer the FTP directory structure. Attempted to access `/opt/juice-shop/ftp/` directly in the browser — this returned no result.
+
+   ![](039.png)
+
+4. Stripped the absolute OS path and tried the relative web path `/ftp/` instead:
+
+   ```
+   /ftp/
+   ```
+
+   ![](040.png)
+
+   This returned a directory listing of all files hosted in the FTP folder.
+
+   ![](041.png)
+
+5. Browsed the directory listing and identified `acquisitions.md` as a confidential document. Navigated to `/ftp/acquisitions.md` to access it.
+
+   ![](042.png)
+
+   ![](043.png)
+
+#### Finding
+The application exposes a publicly accessible `/ftp/` directory containing internal documents, including a confidential business file (`acquisitions.md`). The directory is reachable without authentication, and its existence was revealed through verbose error messages from the order confirmation feature. The combination of information leakage via error responses and an unauthenticated file server allowed full access to sensitive internal documents with no credentials required.
+
+#### Remediation
+- Remove public web access to the `/ftp/` directory entirely. Internal documents must not be served from a publicly reachable web path.
+- If file downloads are required, serve them through an authenticated API endpoint that enforces access control and logs access attempts.
+- Suppress verbose error messages that disclose internal file paths (as also noted in the Error Handling challenge).
+- Periodically audit server-accessible directories for unintended file exposure.
+
+---
+
 ### **View Basket**
 
 | Field | Detail |

@@ -177,6 +177,77 @@ As with the Score Board, the application's compiled JavaScript bundle exposes th
 
 ---
 
+### **Login Admin**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Injection` |
+| **Difficulty** | ⭐⭐ (2 / 5) |
+
+#### Objective
+Log in with the administrator's user account without knowing the password.
+
+#### Methodology
+
+1. Navigated to the login page and tested the username field for SQL injection by entering a single quote (`'`). The application returned an error, indicating the input is passed unsanitised into a SQL query.
+
+    ![](016.png)
+
+2. Crafted a classic authentication bypass payload. The underlying login query takes the form:
+
+   ```sql
+   SELECT * FROM Users WHERE email = '<input>' AND password = '<input>'
+   ```
+
+   Entered the following in the email field:
+
+   ```
+   1' OR 1=1 --
+   ```
+
+   With this input, the query is transformed from:
+
+   ```sql
+   SELECT * FROM Users WHERE email = '1' OR 1=1 --' AND password = '<input>'
+   ```
+
+   to effectively:
+
+   ```sql
+   SELECT * FROM Users WHERE email = '1' OR 1=1
+   ```
+
+   The `OR 1=1` condition is always true, causing the query to return all rows and match the first record in the Users table (the admin account). The `--` sequence comments out the remainder of the query — including the `AND password = ...` check — discarding credential validation entirely.
+
+3. Submitted with any value in the password field. The application authenticated successfully as the admin user.
+
+   ![](017.png)
+   ![](018.png)
+   ![](019.png)
+
+4. Confirmed the result in Burp Suite, which returned a JWT for the admin account along with the admin's email (`admin@juice-sh.op`) and role:
+
+   ```json
+   {
+     "authentication": {
+       "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9...",
+       "bid": 1,
+       "umail": "admin@juice-sh.op"
+     }
+   }
+   ```
+
+#### Finding
+The login endpoint constructs SQL queries by concatenating user-supplied input directly, without parameterisation or prepared statements. This allows an attacker to manipulate the query logic, bypassing authentication entirely and gaining access to any account — including the administrator. SQL injection in an authentication endpoint represents a critical vulnerability, as it grants full administrative access with no credentials required.
+
+#### Remediation
+- Use parameterised queries (prepared statements) for all database interactions. User input must never be interpolated directly into SQL strings.
+- Apply input validation to reject inputs containing SQL metacharacters (e.g. `'`, `--`, `;`) at the application boundary.
+- Implement account lockout or CAPTCHA after a threshold of failed login attempts to limit automated exploitation.
+- Ensure database accounts used by the application operate under the principle of least privilege.
+
+---
+
 ### **Bully Chatbot**
 
 | Field | Detail |

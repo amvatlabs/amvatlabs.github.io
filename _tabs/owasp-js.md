@@ -248,6 +248,37 @@ The login endpoint constructs SQL queries by concatenating user-supplied input d
 
 ---
 
+### **Admin Section**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Broken Access Control` |
+| **Difficulty** | ⭐⭐ (2 / 5) |
+
+#### Objective
+Access the administration section of the store.
+
+#### Methodology
+
+1. While already authenticated as admin (via the SQL injection in the Login Admin challenge), returned to `main.js` to enumerate further internal routes.
+2. Identified an `administration` path among the route definitions in `main.js`.
+
+   ![](020.png)
+
+3. Navigated to `/#/administration`, which loaded the admin panel and completed the challenge.
+
+   ![](021.png)
+
+#### Finding
+The administration panel is protected only by a client-side route guard — there is no server-side enforcement preventing an authenticated (or unauthenticated) user from directly accessing the endpoint by URL. The route path is also openly discoverable via `main.js`. Combined, these issues mean any user who knows the path can attempt to access the panel, and the only barrier is a front-end check that can be trivially bypassed.
+
+#### Remediation
+- Enforce access controls server-side on all administrative API endpoints and views. Client-side route guards must be treated as a UX convenience only, not a security boundary.
+- Restrict the administration section to users with an explicit admin role, validated on every request at the server level.
+- Remove or obfuscate sensitive route names from the client-side JavaScript bundle to prevent trivial enumeration.
+
+---
+
 ### **Bully Chatbot**
 
 | Field | Detail |

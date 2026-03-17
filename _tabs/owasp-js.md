@@ -207,6 +207,41 @@ A development-grade Web3 smart contract sandbox was left deployed and reachable 
 
 ---
 
+### **Exposed Metrics**
+
+| Field | Detail |
+|-------|--------|
+| **Category** | `Observability Failures` |
+| **Difficulty** | ⭐ (1 / 5) |
+
+#### Objective
+Find the endpoint that serves usage data to be scraped by a Prometheus monitoring system.
+
+#### Methodology
+
+1. The challenge hint referenced a popular monitoring system. Identified this as [Prometheus](https://github.com/prometheus/prometheus) based on the description.
+2. Consulted the Prometheus getting started documentation, which states that Prometheus exposes its own metrics at `/metrics` by default:
+
+   > *"You can also verify that Prometheus is serving metrics about itself by navigating to its metrics endpoint: `localhost:9090/metrics`"*
+
+3. Applied this convention to the Juice Shop instance and navigated to `/metrics`.
+
+   ![](044.png)
+
+   ![](045.png)
+
+   The endpoint responded with a full Prometheus metrics payload — no authentication required.
+
+#### Finding
+The application exposes a Prometheus `/metrics` endpoint publicly without any authentication or access restriction. This endpoint reveals detailed operational telemetry including HTTP request counts and durations, internal route activity, memory and CPU usage, event loop lag, and garbage collection statistics. This level of internal observability data provides an attacker with a detailed fingerprint of the application's behaviour, active endpoints, and resource usage patterns — all of which can inform targeted attacks and reconnaissance.
+
+#### Remediation
+- Restrict access to the `/metrics` endpoint to internal networks or authorised monitoring infrastructure only (e.g. via firewall rules, reverse proxy IP allowlisting, or network policy).
+- If the endpoint must remain reachable externally, protect it with authentication (e.g. HTTP Basic Auth or a bearer token).
+- Treat metrics endpoints as sensitive infrastructure surfaces and include them in access control reviews alongside application endpoints.
+
+---
+
 ### **Login Admin**
 
 | Field | Detail |

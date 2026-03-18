@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Jekyll static site using the [Chirpy theme](https://github.com/cotes2020/jekyll-theme-chirpy) (v7.4), deployed to GitHub Pages at `https://www.amvatlabs.com`. It documents a homelab cybersecurity setup across 13 progressive chapters (Chapters 0–12).
+This is a Jekyll static site using the [Chirpy theme](https://github.com/cotes2020/jekyll-theme-chirpy) (v7.4), deployed to GitHub Pages at `https://www.amvatlabs.com`. It documents a homelab cybersecurity setup across 15 progressive chapters (Chapters 0–14).
 
 ## Development Commands
 
@@ -43,7 +43,7 @@ layout: post
 title: "Chapter N - Title Here"
 date: YYYY-MM-DD HH:MM:SS +1100
 authors: [avinash, angela]
-categories: [homelab, <subcategory>]
+categories: [Homelab, <Subcategory>]
 tags: [tag1, tag2, tag3]
 description: One-sentence description for SEO.
 image: headers/01.jpg
@@ -54,6 +54,18 @@ media_subpath: /assets/img/posts/NNN-SlugName/
 - `media_subpath` sets the base path for all images in the post, so image references are just `![](filename.png)`
 - `authors` references entries in `_data/authors.yml`
 - `image` is the header/social preview image, relative to `media_subpath`
+
+**Category taxonomy** (Chirpy supports max 2 levels; first = parent, second = child):
+
+| Subcategory | Used for |
+|---|---|
+| `Infrastructure` | Hardware, Proxmox hypervisor, base VMs (Debian) |
+| `Network Security` | OPNsense firewall, VLANs, WAN access |
+| `Security Monitoring` | Wazuh SIEM, agents, dashboards |
+| `Threat Detection` | IDS/IPS, Suricata, attack simulation & detection |
+| `Offensive Security` | Vulnerable targets, OWASP Juice Shop, DVWA |
+
+**Tag conventions:** Use specific tool/technique names. Do not repeat category concepts as tags. Examples: `proxmox`, `hypervisor`, `opnsense`, `wazuh`, `siem`, `suricata`, `ids`, `brute-force`, `ssh`, `vlan`, `owasp-juice-shop`.
 
 ## Asset Organization
 

@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 0 - Meet Our Lab Gear"
 date: 2025-10-19 12:00:00 +1100
 authors: [avinash, angela]
-categories: [homelab,hardware]
-tags: [server,hp]
+categories: [Homelab, Infrastructure]
+tags: [hp-server, hardware]
 description: A quick look at the hardware powering our homelab.
 image: headers/01.jpg
 media_subpath: /assets/img/posts/000-HardwareOverview

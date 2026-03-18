@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 6 - Enabling Opnsense GUI Access from the WAN"
 date: 2025-10-22 13:00:00 +1100
 authors: [avinash, angela]
-categories: [homelab,firewall]
-tags: [opnsense,configuration]
+categories: [Homelab, Network Security]
+tags: [opnsense, firewall, wan-access]
 description: Enabling Opnsense Dashboard access from the WAN.
 image: headers/01.jpg
 media_subpath: /assets/img/posts/006-OpnsenseGUIAccessFromWAN/

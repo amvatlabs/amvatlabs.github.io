@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 9 - Deploying a Wazuh Agent"
 date: 2025-11-05 12:00:00 +1100
 authors: [avinash, angela]
-categories: [homelab,siem]
-tags: [wazuh, agent, configuration]
+categories: [Homelab, Security Monitoring]
+tags: [wazuh, siem, agent]
 description: Deploying Wazuh agent on endpoint to enable real-time monitoring and alerting.
 image: headers/01.jpg
 media_subpath: /assets/img/posts/009-DeployingWazuhAgent/

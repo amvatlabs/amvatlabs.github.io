@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 12 - Intrusion Detection Using Suricata on OPNsense"
 date: 2026-1-25 16:00:00 +1100
 authors: [avinash, angela]
-categories: [homelab,ids]
-tags: [suricata, opnsense, intrusion-detection, attack-detection]
+categories: [Homelab, Threat Detection]
+tags: [suricata, ids, opnsense, intrusion-detection]
 description: Detecting suspicious command execution using Suricata IDS integrated with OPNsense.
 image: headers/01.jpg
 media_subpath: /assets/img/posts/012-IntrusionDetection/

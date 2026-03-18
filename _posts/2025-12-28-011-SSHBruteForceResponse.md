@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 11 - SSH Brute-Force Response Using Wazuh Active Response"
 date: 2025-12-28 16:00:00 +1100
 authors: [avinash, angela]
-categories: [homelab,siem]
-tags: [wazuh, attack, response]
+categories: [Homelab, Threat Detection]
+tags: [wazuh, ssh, brute-force, active-response]
 description: Responding to a simulated SSH brute-force attack using Wazuh Active Response.
 image: headers/01.jpg
 media_subpath: /assets/img/posts/011-SSHBruteForceResponse/

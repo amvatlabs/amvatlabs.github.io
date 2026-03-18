@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 13 - Deploying Vulnerable Web Applications: OWASP Juice Shop and DVWA"
 date: 2026-03-03 12:00:00 +1100
 authors: [avinash, angela]
-categories: [homelab, vulnerable-machines]
-tags: [owasp-juice-shop, owaspjs, dvwa, lxc, proxmox, opnsense]
+categories: [Homelab, Offensive Security]
+tags: [owasp-juice-shop, dvwa, lxc, proxmox, vulnerable-machines]
 description: Deploying OWASP Juice Shop and DVWA as intentionally vulnerable targets in LXC containers on Proxmox.
 image: headers/01.jpg
 media_subpath: /assets/img/posts/013-DeployingVulnMachines/

@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 5 - Configuring OPNsense and Setting Up VLANs"
 date: 2025-10-22 12:00:00 +1100
 authors: [avinash, angela]
-categories: [homelab,firewall]
-tags: [opnsense,configuration]
+categories: [Homelab, Network Security]
+tags: [opnsense, firewall, vlan]
 description: Configuring OPNsense and setting up VLANs to segment traffic.
 image: headers/01.jpg
 media_subpath: /assets/img/posts/005-OpnsenseConfiguration/

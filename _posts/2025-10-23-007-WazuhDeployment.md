@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 7 - Wazuh Deployment"
 date: 2025-10-23 12:00:00 +1100
 authors: [avinash, angela]
-categories: [homelab,siem]
-tags: [wazuh,deployment]
+categories: [Homelab, Security Monitoring]
+tags: [wazuh, siem, installation]
 description: Deploying Wazuh to monitor and collect internal security events.
 image: headers/01.jpg
 media_subpath: /assets/img/posts/007-WazuhDeployment/

@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 10 - SSH Brute-Force Detection Using Wazuh"
 date: 2025-12-28 12:00:00 +1100
 authors: [avinash, angela]
-categories: [homelab,siem]
-tags: [wazuh, attack, detection]
+categories: [Homelab, Threat Detection]
+tags: [wazuh, ssh, brute-force, detection]
 description: Simulating and detecting an SSH password brute-force attack in Wazuh.
 image: headers/01.jpg
 media_subpath: /assets/img/posts/010-SSHBruteForceDetection/

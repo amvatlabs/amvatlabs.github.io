@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 1 - Installing Proxmox"
 date: 2025-10-19 12:50:00 +1100
 authors: [avinash, angela]
-categories: [homelab,virtualisation]
-tags: [proxmox,installation]
+categories: [Homelab, Infrastructure]
+tags: [proxmox, hypervisor, installation]
 description: Setting up Proxmox for our homelab with guidance from Jim’s Garage.
 image: headers/01.png
 media_subpath: /assets/img/posts/001-ProxmoxInstallation/

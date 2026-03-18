@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 14 - Analysis of SYN Scan Behaviour and IDS Detection"
 date: 2026-03-04 12:00:00 +1100
 authors: [avinash, angela]
-categories: [homelab, ids]
-tags: [suricata, opnsense, intrusion-detection, attack-detection]
+categories: [Homelab, Threat Detection]
+tags: [suricata, ids, syn-scan, custom-rules]
 description: Custom Suricata rule creation and SYN scan detection validation
 image: headers/01.jpg
 media_subpath: /assets/img/posts/014-SyncScanIDSDetection/

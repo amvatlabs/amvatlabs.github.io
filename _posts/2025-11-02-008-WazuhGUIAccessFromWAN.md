@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 8 - Enabling Wazuh GUI Access from the WAN"
 date: 2025-11-02 12:00:00 +1100
 authors: [avinash, angela]
-categories: [homelab,siem]
-tags: [wazuh,configuration]
+categories: [Homelab, Security Monitoring]
+tags: [wazuh, siem, wan-access]
 description: Enabling and verifying Wazuh Dashboard access from the WAN.
 image: headers/01.jpg
 media_subpath: /assets/img/posts/008-WazuhGUIAccessFromWAN/

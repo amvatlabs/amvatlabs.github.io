@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 3 - Deploying Opnsense Firewall"
 date: 2025-10-21 12:00:00 +1100
 authors: [avinash, angela]
-categories: [homelab,firewall]
-tags: [opnsense,installation]
+categories: [Homelab, Network Security]
+tags: [opnsense, firewall, installation]
 description: Deploying OPNsense as a virtual firewall to secure lab network traffic.
 image: headers/01.jpg
 media_subpath: /assets/img/posts/003-DeployingOpnsense/

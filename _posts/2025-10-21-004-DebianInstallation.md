@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 4 - Installing Debian in Proxmox"
 date: 2025-10-21 12:50:00 +1100
 authors: [avinash, angela]
-categories: [homelab,endpoint]
-tags: [debian,installation]
+categories: [Homelab, Infrastructure]
+tags: [debian, linux, vm]
 description: Setting up a Debian VM as the internal admin endpoint.
 image: headers/01.jpg
 media_subpath: /assets/img/posts/004-DebianInstallation/

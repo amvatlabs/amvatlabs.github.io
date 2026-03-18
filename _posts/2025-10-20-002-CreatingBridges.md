@@ -3,8 +3,8 @@ layout: post
 title: "Chapter 2 - Creating Bridges"
 date: 2025-10-20 12:00:00 +1100
 authors: [avinash, angela]
-categories: [homelab,virtualisation]
-tags: [proxmox,configuration]
+categories: [Homelab, Infrastructure]
+tags: [proxmox, networking, bridge]
 description: Creating LAN and WAN bridges in Proxmox to connect virtual machines.
 image: headers/01.jpg
 media_subpath: /assets/img/posts/002-CreatingBridges/

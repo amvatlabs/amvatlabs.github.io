@@ -31,17 +31,10 @@ We believe that hands-on experience is one of the best ways to grow in cybersecu
     {% assign author = pair[1] %}
     <div class="author-card" style="display:flex; align-items:center; margin-bottom: 1.5em; margin-top: 1.5em;">
         <img src="{{ author.avatar | relative_url }}" alt="{{ author.name }}" style="width:200px; height:200px; border-radius:50%; margin-right:40px;" loading="lazy">
-        <div>
-            <h3>{{ author.name }}</h3><br />
-            {% if author.tryhackme %}
-            <a href="{{ author.tryhackme }}" target="_blank">TryHackMe</a>
-            {% endif %}
-            {% if author.linkedin %}
-            • <a href="{{ author.linkedin }}" target="_blank">LinkedIn</a>
-            {% endif %}
-            {% if author.github %}
-            • <a href="{{ author.github }}" target="_blank">GitHub</a>
-            {% endif %}
+        <div style="display:flex; flex-direction:column; gap:8px;">
+            <h3 style="margin:0;">{{ author.name }}</h3>
+            {% if author.email %}<div style="display:flex; align-items:center; gap:6px;"><i class="fas fa-envelope"></i><a href="mailto:{{ author.email }}">{{ author.email }}</a></div>{% endif %}
+            <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">{% if author.tryhackme %}<span style="display:flex; align-items:center; gap:6px;"><span style="display:inline-block; width:20px; height:20px; background:url('https://raw.githubusercontent.com/Avinash-Mathew/assets/main/email/tryhackme.png') center/contain no-repeat;"></span><a href="{{ author.tryhackme }}" target="_blank">TryHackMe</a></span>{% endif %}{% if author.linkedin %}<span style="display:flex; align-items:center; gap:6px;"><span style="display:inline-block; width:20px; height:20px; background:url('https://raw.githubusercontent.com/Avinash-Mathew/assets/main/email/linkedin.png') center/contain no-repeat;"></span><a href="{{ author.linkedin }}" target="_blank">LinkedIn</a></span>{% endif %}{% if author.github %}<span style="display:flex; align-items:center; gap:6px;"><span style="display:inline-block; width:20px; height:20px; background:url('https://raw.githubusercontent.com/Avinash-Mathew/assets/main/email/github.png') center/contain no-repeat;"></span><a href="{{ author.github }}" target="_blank">GitHub</a></span>{% endif %}</div>
         </div>
     </div>
 {% endfor %}
